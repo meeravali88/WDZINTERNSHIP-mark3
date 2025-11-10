@@ -1,0 +1,107 @@
+/* ---------- General Page Setup ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body.auth-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to right, #7ebcf7, #efa8f1);
+}
+
+/* ---------- Login / Register Container ---------- */
+.login-container,
+.register-container {
+  width: 350px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  padding: 25px 30px;
+  text-align: center;
+}
+
+.form-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* ---------- Input Fields ---------- */
+.input-wrapper {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px 40px 12px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border 0.2s ease;
+}
+
+.input-field:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.material-symbols-outlined {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: gray;
+  font-size: 20px;
+}
+
+/* ---------- Forgot Password ---------- */
+.forgot-password-link {
+  display: block;
+  text-align: right;
+  font-size: 13px;
+  color: #007bff;
+  text-decoration: none;
+  margin-bottom: 15px;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Submit Button ---------- */
+.submit-button {
+  width: 100%;
+  padding: 10px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.3s ease;
+}
+
+.submit-button:hover {
+  background: #0056d8;
+}
+
+/* ---------- Signup Text ---------- */
+.signup-text {
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.register-link {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.register-link:hover {
+  text-decoration: underline;
+}

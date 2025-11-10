@@ -1,0 +1,129 @@
+/* 🌐 Base Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* --- Container --- */
+.login-container {
+  width: 360px;
+  background: #f8f9fa;
+  border-radius: 14px;
+  padding: 40px 30px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin: 100px auto;
+  transition: all 0.3s ease;
+}
+
+.login-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* --- Title --- */
+.form-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 25px;
+  letter-spacing: 0.5px;
+}
+
+/* --- Input Fields --- */
+.login-form input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  outline: none;
+  font-size: 15px;
+  background-color: #fff;
+  transition: all 0.3s ease;
+}
+
+.login-form input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.25);
+}
+
+/* --- Buttons --- */
+.login-form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.login-form button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 4px 10px rgba(0, 91, 187, 0.3);
+}
+
+/* --- Register Button --- */
+.register-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+
+.register-btn:hover {
+  background-color: #1e7e34;
+  box-shadow: 0 4px 10px rgba(30, 126, 52, 0.3);
+}
+
+/* --- Link Styling --- */
+a {
+  text-decoration: none;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 480px) {
+  .login-container {
+    width: 90%;
+    padding: 30px 20px;
+  }
+
+  .form-title {
+    font-size: 24px;
+  }
+
+  .login-form input,
+  .login-form button,
+  .register-btn {
+    font-size: 15px;
+  }
+}
+
+/* --- Subtle Fade-in Animation --- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-container {
+  animation: fadeIn 0.5s ease;
+}
