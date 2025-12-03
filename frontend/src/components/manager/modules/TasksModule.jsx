@@ -48,8 +48,8 @@ const TasksModule = ({ userProfile, onOpenModal, onLogout, onNavigate, tasks, on
     const filteredTasks = useMemo(() => {
         const now = new Date();
         switch (activeFilter) {
-            case 'my-tasks':
-                return tasks.filter(task => task.assignee === userProfile.name); // Assumes assignee name matches profile name
+            // case 'my-tasks':
+            //     return tasks.filter(task => task.assignee === userProfile.name); // Assumes assignee name matches profile name
             case 'overdue':
                 return tasks.filter(task => new Date(task.dueDate) < now && task.status !== 'completed');
             case 'completed':
@@ -62,7 +62,7 @@ const TasksModule = ({ userProfile, onOpenModal, onLogout, onNavigate, tasks, on
 
     const getEmptyState = () => {
         switch (activeFilter) {
-            case 'my-tasks': return { icon: 'user', title: 'No Tasks Assigned to You', msg: 'Tasks assigned to you will appear here' };
+            // case 'my-tasks': return { icon: 'user', title: 'No Tasks Assigned to You', msg: 'Tasks assigned to you will appear here' };
             case 'overdue': return { icon: 'exclamation-triangle', title: 'No Overdue Tasks', msg: 'Great job! All tasks are on schedule' };
             case 'completed': return { icon: 'check-circle', title: 'No Completed Tasks', msg: 'Completed tasks will appear here' };
             case 'all':
@@ -74,13 +74,13 @@ const TasksModule = ({ userProfile, onOpenModal, onLogout, onNavigate, tasks, on
 
     return (
         <div className="module-container active" id="tasks-module">
-            <Header
+            {/* <Header
                 title="Task Management"
                 userProfile={userProfile}
                 onOpenProfile={() => onOpenModal('profile')}
                 onOpenSettings={() => onNavigate('settings')}
                 onLogout={onLogout}
-            />
+            /> */}
             <div className="user-info" style={{ marginBottom: '20px', justifyContent: 'flex-end' }}>
                 <button className="btn btn-primary" onClick={() => onOpenModal('task')}>
                     <i className="fas fa-plus"></i> New Task
@@ -92,7 +92,7 @@ const TasksModule = ({ userProfile, onOpenModal, onLogout, onNavigate, tasks, on
                     <h3>Active Tasks</h3>
                     <div className="tasks-filter">
                         <button className={`filter-btn ${activeFilter === 'all' ? 'active' : ''}`} onClick={() => setActiveFilter('all')}>All Tasks</button>
-                        <button className={`filter-btn ${activeFilter === 'my-tasks' ? 'active' : ''}`} onClick={() => setActiveFilter('my-tasks')}>My Tasks</button>
+                        {/* <button className={`filter-btn ${activeFilter === 'my-tasks' ? 'active' : ''}`} onClick={() => setActiveFilter('my-tasks')}>My Tasks</button> */}
                         <button className={`filter-btn ${activeFilter === 'overdue' ? 'active' : ''}`} onClick={() => setActiveFilter('overdue')}>Overdue</button>
                         <button className={`filter-btn ${activeFilter === 'completed' ? 'active' : ''}`} onClick={() => setActiveFilter('completed')}>Completed</button>
                     </div>

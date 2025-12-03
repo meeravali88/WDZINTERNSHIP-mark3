@@ -1,123 +1,168 @@
-import React from 'react';
-import Header from '../Header';
-import EmptyState from '../EmptyState';
+import React, { useState } from "react";
+import Header from "../Header";
+import EmptyState from "../EmptyState";
+import ProjectCard from "../ProjectCard";
 
-// --- COMPONENTS ---
-const PendingProjectCard = ({ project, onApprove, onDecline }) => (
-    <div className="project-card planning" style={{ borderLeftColor: '#f39c12', background: '#fffaf0' }}>
-        <div className="project-header">
-             <div>
-                <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#f39c12' }}>REQUESTED BY CUSTOMER</span>
-                <div className="project-title">{project.name}</div>
-             </div>
-             <span className="status-badge status-pending">PENDING APPROVAL</span>
-        </div>
-        <p>{project.description}</p>
-        <div style={{ fontWeight: 500, marginBottom: '15px' }}>Proposed Budget: ${project.budget.toLocaleString()}</div>
-        <div style={{ display: 'flex', gap: '10px' }}>
-            <button onClick={() => onApprove(project.id)} className="btn btn-success" style={{ flex: 1, justifyContent: 'center' }}>
-                <i className="fas fa-check"></i> Approve
-            </button>
-            <button onClick={() => onDecline(project.id)} className="btn btn-danger" style={{ flex: 1, justifyContent: 'center' }}>
-                <i className="fas fa-times"></i> Decline
-            </button>
-        </div>
-    </div>
-);
-
-const ProjectCard = ({ project, onDeleteProject }) => (
-    <div className={`project-card ${project.status}`}>
-        {project.approvalStatus === 'approved' && project.requestedBy && (
-           <div style={{fontSize: '0.75rem', color: 'var(--success)', marginBottom: '5px'}}>
-               <i className="fas fa-check-circle"></i> Approved Customer Request
-           </div>
-        )}
-        <div className="project-header">
-            <div>
-                <div className="project-title">{project.name}</div>
-                <div style={{ color: 'var(--gray)', fontSize: '0.9rem' }}>{project.description}</div>
-            </div>
-            <span className={`status-badge status-${project.status}`}>
-                {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
-            </span>
-        </div>
-        <div className="project-meta">
-            <div className="meta-item"><i className="fas fa-calendar"></i><span>{new Date(project.startDate).toLocaleDateString()} - {project.endDate ? new Date(project.endDate).toLocaleDateString() : 'TBD'}</span></div>
-            <div className="meta-item"><i className="fas fa-users"></i><span>{project.teamSize} members</span></div>
-        </div>
-        <div className="progress-container">
-            <div className="progress-label"><span>Progress</span><span>{project.progress}%</span></div>
-            <div className="progress-bar">
-                <div className="progress-fill" style={{ width: `${project.progress}%`, background: `var(--${project.status === 'delayed' ? 'danger' : project.status === 'ontrack' ? 'success' : 'warning'})` }}></div>
-            </div>
-        </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '15px' }}>
-            <div style={{ fontWeight: 500 }}>Budget: ${project.budget.toLocaleString()}</div>
-            <div className="chart-actions">
-                <button className="chart-actions button"><i className="fas fa-edit"></i></button>
-                <button className="chart-actions button" onClick={() => onDeleteProject(project.id)}><i className="fas fa-trash"></i></button>
-            </div>
-        </div>
-    </div>
-);
-
-// --- MAIN MODULE COMPONENT ---
-const ProjectsModule = ({ userProfile, onOpenModal, onLogout, onNavigate, projects, onDeleteProject, onApproveProject, onDeclineProject }) => {
-    // Ensure we have arrays even if data is missing
-    const safeProjects = projects || [];
-    const pendingProjects = safeProjects.filter(p => p.approvalStatus === 'pending');
-    // Active projects are those that are NOT pending AND NOT declined.
-    // We also include projects that have NO approvalStatus (legacy data support)
-    const activeProjects = safeProjects.filter(p => p.approvalStatus !== 'pending' && p.approvalStatus !== 'declined');
+const PendingProjectCard = ({ project, onApprove, onDecline }) => {
+    const firstLetter = project?.name?.charAt?.(0)?.toUpperCase?.() || "?";
 
     return (
-        <div className="module-container active" id="projects-module">
+        <div className="project-card planning" style={{ borderLeftColor: "#f39c12", background: "#fffaf0" }}>
+            <div className="project-header">
+                <div>
+                    <span style={{ fontSize: "0.8rem", fontWeight: "bold", color: "#f39c12" }}>
+                        REQUESTED BY CUSTOMER
+                    </span>
+                    <div className="project-title">{firstLetter}</div>
+                </div>
+                <span className="status-badge status-pending">PENDING APPROVAL</span>
+            </div>
+
+            <p>{project?.description || "No description"}</p>
+
+            <div style={{ fontWeight: 500, marginBottom: "15px" }}>
+                Proposed Budget: ${project?.budget?.toLocaleString?.() || "0"}
+            </div>
+
+            <div style={{ display: "flex", gap: "10px" }}>
+                <button onClick={() => onApprove(project.id)} className="btn btn-success" style={{ flex: 1 }}>
+                    <i className="fas fa-check"></i> Approve
+                </button>
+                <button onClick={() => onDecline(project.id)} className="btn btn-danger" style={{ flex: 1 }}>
+                    <i className="fas fa-times"></i> Decline
+                </button>
+            </div>
+        </div>
+    );
+};
+
+const ProjectsModule = ({
+    userProfile,
+    onOpenModal,
+    onLogout,
+    onNavigate,
+    projects,
+    employees,
+    onDeleteProject,
+    onApproveProject,
+    onDeclineProject,
+
+    // new handler from ManagerDashboard
+    onAssignProjectToEmployees,
+}) => {
+    const safeProjects = Array.isArray(projects) ? projects : [];
+    const safeEmployees = Array.isArray(employees) ? employees : [];
+
+    const pendingProjects = safeProjects.filter((p) => p.approvalStatus === "pending");
+    const activeProjects = safeProjects.filter(
+        (p) => p.approvalStatus !== "pending" && p.approvalStatus !== "declined"
+    );
+
+    const [selectedProjectId, setSelectedProjectId] = useState("");
+    const [selectedEmployees, setSelectedEmployees] = useState([]);
+
+    const toggleEmployee = (id) => {
+        setSelectedEmployees((prev) =>
+            prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+        );
+    };
+
+    const assignNow = () => {
+        if (!selectedProjectId || selectedEmployees.length === 0) {
+            alert("Select a project and at least one employee.");
+            return;
+        }
+        onAssignProjectToEmployees(selectedProjectId, selectedEmployees);
+        setSelectedEmployees([]);
+    };
+
+    return (
+        <div className="module-container active">
+
             <Header
                 title="Project Management"
                 userProfile={userProfile}
-                onOpenProfile={() => onOpenModal('profile')}
-                onOpenSettings={() => onNavigate('settings')}
+                onOpenProfile={() => onOpenModal("profile")}
+                onOpenSettings={() => onNavigate("settings")}
                 onLogout={onLogout}
             />
-            <div className="user-info" style={{ marginBottom: '20px', justifyContent: 'flex-end' }}>
-                <button className="btn btn-primary" onClick={() => onOpenModal('project')}>
-                    <i className="fas fa-plus"></i> New Project
+
+            {/* ASSIGN PROJECT SECTION */}
+            <div className="card" style={{ padding: "20px", marginBottom: "25px" }}>
+                <h3 style={{ marginBottom: "15px" }}>
+                    <i className="fas fa-tasks"></i> Assign Project to Employees
+                </h3>
+
+                {/* Project dropdown */}
+                <select
+                    className="form-control"
+                    value={selectedProjectId}
+                    onChange={(e) => setSelectedProjectId(e.target.value)}
+                    style={{ marginBottom: "15px" }}
+                >
+                    <option value="">-- Select Project --</option>
+                    {activeProjects.map((proj) => (
+                        <option key={proj.id} value={proj.id}>{proj.name}</option>
+                    ))}
+                </select>
+
+                {/* Employee selection */}
+                <div className="employee-select-grid">
+                    {safeEmployees.map((emp) => (
+                        <label key={emp.id} className="employee-select-item">
+                            <input
+                                type="checkbox"
+                                checked={selectedEmployees.includes(emp.id)}
+                                onChange={() => toggleEmployee(emp.id)}
+                            />
+                            {emp.name} ({emp.position})
+                        </label>
+                    ))}
+                </div>
+
+                <button className="btn btn-success" disabled={!selectedProjectId} onClick={assignNow}>
+                    <i className="fas fa-check"></i> Assign Selected Employees
                 </button>
             </div>
 
-            {/* PENDING APPROVALS SECTION */}
+            {/* PENDING PROJECTS */}
             {pendingProjects.length > 0 && (
-                <div style={{ marginBottom: '40px' }}>
-                    <h3 style={{ color: '#f39c12', marginBottom: '15px', borderBottom: '2px solid #f39c12', paddingBottom: '10px' }}>
-                        <i className="fas fa-exclamation-circle"></i> Pending Customer Requests ({pendingProjects.length})
+                <div style={{ marginBottom: "40px" }}>
+                    <h3 style={{ color: "#f39c12", marginBottom: "15px" }}>
+                        Pending Customer Requests ({pendingProjects.length})
                     </h3>
+
                     <div className="projects-grid">
-                        {pendingProjects.map(project => (
-                            <PendingProjectCard 
-                                key={project.id} 
-                                project={project} 
-                                onApprove={onApproveProject} 
-                                onDecline={onDeclineProject} 
+                        {pendingProjects.map((project) => (
+                            <PendingProjectCard
+                                key={project.id}
+                                project={project}
+                                onApprove={onApproveProject}
+                                onDecline={onDeclineProject}
                             />
                         ))}
                     </div>
                 </div>
             )}
 
-            {/* ACTIVE PROJECTS SECTION */}
-            <h3 style={{ color: 'var(--dark)', marginBottom: '15px' }}>Active Projects</h3>
-            <div className="projects-grid" id="projectsGrid">
+            <h3 style={{ marginBottom: "15px" }}>Active Projects</h3>
+
+            <div className="projects-grid">
                 {activeProjects.length === 0 ? (
                     <EmptyState
                         icon="project-diagram"
                         title="No Active Projects"
                         message="Create a project or approve a request to get started"
-                        buttonText={pendingProjects.length === 0 ? "Create Project" : null}
-                        onButtonClick={() => onOpenModal('project')}
+                        buttonText="Create Project"
+                        onButtonClick={() => onOpenModal("project")}
                     />
                 ) : (
-                    activeProjects.map(project => (
-                        <ProjectCard key={project.id} project={project} onDeleteProject={onDeleteProject} />
+                    activeProjects.map((project) => (
+                        <ProjectCard
+                            key={project.id}
+                            project={project}
+                            onDeleteProject={onDeleteProject}
+                        />
                     ))
                 )}
             </div>

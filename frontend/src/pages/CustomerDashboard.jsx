@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import "../styles/CustomerDashboard.css"; // ✅ Import CSS
+import "../styles/CustomerDashboard.css";
 
 const CustomerDashboard = ({ user, onLogout }) => {
-  const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -11,171 +9,199 @@ const CustomerDashboard = ({ user, onLogout }) => {
     description: "",
     budget: "",
   });
+  const [errors, setErrors] = useState({
+    name: "",
+    budget: "",
+  });
 
-  // ✅ Load customer’s existing projects
   useEffect(() => {
-    const allProjects = JSON.parse(localStorage.getItem("builderp_projects")) || [];
-    setProjects(allProjects.filter((p) => p.requestedBy === user.email));
+    const all = JSON.parse(localStorage.getItem("builderp_projects")) || [];
+    setProjects(all.filter((p) => p.requestedBy === user.email));
   }, [user.email]);
 
-  /**
-   * ✅ NEW: Save Customer Request for Manager Approvals
-   */
-  const handleNewRequest = (projectData) => {
-    const requests = JSON.parse(localStorage.getItem("customerRequests")) || [];
+  const saveCustomerRequest = (projectData) => {
+    const req = JSON.parse(localStorage.getItem("customerRequests")) || [];
 
-    const newRequest = {
+    req.push({
       id: Date.now(),
       customerName: user.name,
       customerEmail: user.email,
-      details: `Project: ${projectData.name}, Budget: $${projectData.budget}, Description: ${projectData.description}`,
+      details: `Project: ${projectData.name}, Budget: ₹${projectData.budget}, Description: ${projectData.description}`,
       status: "Pending",
       submittedAt: new Date().toLocaleString(),
-    };
+    });
 
-    requests.push(newRequest);
-    localStorage.setItem("customerRequests", JSON.stringify(requests));
+    localStorage.setItem("customerRequests", JSON.stringify(req));
     window.dispatchEvent(new Event("storage"));
-
   };
 
-  /**
-   * ✅ Handle new project request form submit
-   */
-  const handleRequestProject = (e) => {
+  // VALIDATION LOGIC
+  const validateForm = () => {
+    let valid = true;
+    let newErrors = { name: "", budget: "" };
+    const nameRegex = /^[A-Za-z ]{3,40}$/;
+
+    if (!nameRegex.test(formData.name.trim())) {
+      newErrors.name = "Project name must contain only letters & spaces (3–40 characters).";
+      valid = false;
+    }
+    const budgetValue = Number(formData.budget);
+
+    if (isNaN(budgetValue) || budgetValue <= 0) {
+      newErrors.budget = "Please enter a valid budget amount.";
+      valid = false;
+    } else if (budgetValue > 10000000) {
+      newErrors.budget = "Budget must be below ₹1 Crore.";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
 
     const newProject = {
       id: Date.now().toString(),
       name: formData.name.trim(),
-      description: formData.description.trim(),
-      budget: parseFloat(formData.budget),
+      description: formData.description,
+      budget: Number(formData.budget),
       startDate: new Date().toISOString().split("T")[0],
       endDate: "",
-      status: "planning",
+      status: "Planning",
       approvalStatus: "pending",
       progress: 0,
-      requestedBy: user.email, // Link to logged-in customer
-      teamSize: 0,
+      requestedBy: user.email,
     };
 
-    const allProjects = JSON.parse(localStorage.getItem("builderp_projects")) || [];
-    const updatedProjects = [...allProjects, newProject];
-    localStorage.setItem("builderp_projects", JSON.stringify(updatedProjects));
+    const all = JSON.parse(localStorage.getItem("builderp_projects")) || [];
+    const updated = [...all, newProject];
 
-    // ✅ Update state for this customer’s list
-    setProjects(updatedProjects.filter((p) => p.requestedBy === user.email));
+    localStorage.setItem("builderp_projects", JSON.stringify(updated));
+    setProjects(updated.filter((p) => p.requestedBy === user.email));
 
-    // ✅ Also save in manager approvals queue
-    handleNewRequest(newProject);
+    saveCustomerRequest(newProject);
 
-    // ✅ Reset form
-    setShowModal(false);
+    alert("Project request submitted!");
+
     setFormData({ name: "", description: "", budget: "" });
-
-    alert("✅ Project requested successfully! Waiting for manager approval.");
-  };
-
-  // ✅ Logout
-  const handleLogout = () => {
-    onLogout();
-    navigate("/");
+    setShowModal(false);
+    setErrors({ name: "", budget: "" });
   };
 
   return (
     <div className="customer-dashboard">
-      {/* --- HEADER --- */}
-      <header className="customer-header">
-        <h1>Hello, {user.name || "Customer"}</h1>
-        <button className="logout-btn" onClick={handleLogout}>
+      <header className="dashboard-header">
+        <div>
+          <h1>Welcome, {user.name}</h1>
+          <p className="tagline">
+            A simple and easy place to manage your project requests.
+          </p>
+        </div>
+
+        <button onClick={onLogout} className="logout-btn">
           Logout
         </button>
       </header>
+      <div className="features-guide">
+        <h2 className="guide-title">How to Request Your Project?</h2>
 
-      {/* --- REQUEST SECTION --- */}
-      <div className="request-section">
-        <button className="request-btn" onClick={() => setShowModal(true)}>
-          <i className="fas fa-plus-circle"></i> Request New Project
+        <div className="features-grid">
+          <div className="feature-box">
+            <span className="icon">📝</span>
+            <h3>Enter Details</h3>
+            <p>Provide a clear name and description of your project idea.</p>
+          </div>
+
+          <div className="feature-box">
+            <span className="icon">💰</span>
+            <h3>Set a Budget</h3>
+            <p>Give an approximate budget that suits your work requirement.</p>
+          </div>
+
+          <div className="feature-box">
+            <span className="icon">📨</span>
+            <h3>Submit Request</h3>
+            <p>Your request will be sent to managers for approval.</p>
+          </div>
+
+          <div className="feature-box">
+            <span className="icon">📊</span>
+            <h3>Track Status</h3>
+            <p>Check approval or progress anytime from your dashboard.</p>
+          </div>
+        </div>
+      </div>
+      <div className="request-btn-wrapper">
+        <button className="new-project-btn" onClick={() => setShowModal(true)}>
+          + Submit a New Project Request
         </button>
       </div>
-
-      {/* --- PROJECT LIST --- */}
-      <h2>Your Project Requests</h2>
-      <div className="project-list">
+      <h2 className="section-title">Your Project Requests</h2>
+      <div className="project-grid">
         {projects.length === 0 ? (
-          <p style={{ color: "#7f8c8d", fontSize: "1.1rem" }}>
-            You haven’t requested any projects yet.
-          </p>
+          <p className="empty-text">No requests yet. Start by creating one!</p>
         ) : (
           projects.map((p) => (
             <div key={p.id} className="project-card">
-              <div className="project-card-header">
+              <div className="project-header">
                 <h3>{p.name}</h3>
                 <span
                   className={`status-badge ${
                     p.approvalStatus === "approved"
-                      ? "status-approved"
+                      ? "approved"
                       : p.approvalStatus === "declined"
-                      ? "status-declined"
-                      : "status-pending"
+                      ? "declined"
+                      : "pending"
                   }`}
                 >
                   {p.approvalStatus.toUpperCase()}
                 </span>
               </div>
-              <p>{p.description}</p>
-              <p>
-                <strong>Proposed Budget:</strong> ${p.budget.toLocaleString()}
-              </p>
-              <p>
-                <strong>Status:</strong>{" "}
-                {p.status.charAt(0).toUpperCase() + p.status.slice(1)}
-              </p>
+
+              <p><strong>Budget:</strong> ₹{p.budget.toLocaleString()}</p>
+              <p><strong>Description:</strong> {p.description}</p>
+              <p><strong>Status:</strong> {p.status}</p>
             </div>
           ))
         )}
       </div>
-
-      {/* --- MODAL --- */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-box">
-            <h2>Request a New Project</h2>
-            <form onSubmit={handleRequestProject}>
-              <div>
-                <label>Project Name</label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  required
-                />
-              </div>
-              <div>
-                <label>Description</label>
-                <textarea
-                  rows="3"
-                  value={formData.description}
-                  onChange={(e) =>
-                    setFormData({ ...formData, description: e.target.value })
-                  }
-                  required
-                ></textarea>
-              </div>
-              <div>
-                <label>Estimated Budget</label>
-                <input
-                  type="number"
-                  value={formData.budget}
-                  onChange={(e) =>
-                    setFormData({ ...formData, budget: e.target.value })
-                  }
-                  required
-                />
-              </div>
-
+            <h2>Request New Project</h2>
+            <form onSubmit={handleSubmit}>
+              <label>Project Name</label>
+              <input
+                type="text"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                required
+              />
+              {errors.name && <p className="error-text">{errors.name}</p>}
+              <label>Description</label>
+              <textarea
+                rows="3"
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
+                required
+              ></textarea>
+              <label>Estimated Budget (₹)</label>
+              <input
+                type="number"
+                value={formData.budget}
+                onChange={(e) =>
+                  setFormData({ ...formData, budget: e.target.value })
+                }
+                required
+              />
+              {errors.budget && <p className="error-text">{errors.budget}</p>}
               <div className="modal-actions">
                 <button
                   type="button"
@@ -192,8 +218,8 @@ const CustomerDashboard = ({ user, onLogout }) => {
           </div>
         </div>
       )}
+
     </div>
   );
 };
-
 export default CustomerDashboard;

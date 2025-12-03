@@ -41,7 +41,7 @@ function RegisterPage() {
 
     if (!validatePassword(formData.password)) {
       setError(
-        "❌ Password must start with a capital letter and be at least 8 characters long."
+        "Password must start with a capital letter and be at least 8 characters long."
       );
       return;
     }
@@ -59,8 +59,6 @@ function RegisterPage() {
       setTimeout(() => navigate("/"), 1500);
       return;
     }
-
-    // ✅ Always store role in lowercase
     const normalizedRole = formData.role.trim().toLowerCase();
 
     const newUser = {
@@ -74,11 +72,7 @@ function RegisterPage() {
 
     existingUsers.push(newUser);
     localStorage.setItem("users", JSON.stringify(existingUsers));
-    localStorage.setItem("loggedInUser", JSON.stringify(newUser));
-
-    setSuccess(`✅ Registration successful as ${normalizedRole}! Redirecting...`);
-
-    // ✅ Redirect user to correct dashboard immediately
+    setSuccess(`Registration successful as ${normalizedRole}! Redirecting...`);
     setTimeout(() => {
       switch (normalizedRole) {
         case "manager":

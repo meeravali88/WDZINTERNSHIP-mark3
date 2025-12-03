@@ -32,7 +32,7 @@ const DashboardModule = ({
       {/* ✅ Header */}
       <Header
         title="Construction Analytics Dashboard"
-        userProfile={userProfile}
+        // userProfile={userProfile}
         onOpenProfile={() => onOpenModal("profile")}
         onOpenSettings={() => onNavigate("settings")}
         onLogout={onLogout}

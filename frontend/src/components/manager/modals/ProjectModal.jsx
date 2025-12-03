@@ -46,9 +46,6 @@ const ProjectModal = ({ isOpen, onClose, onSubmit }) => {
             budget: parseFloat(budget),
             startDate,
             endDate,
-            manager,
-            // Optional: save the estimation details too if your backend supports it
-            estimationDetails: isEstimating ? estimationItems : null 
         });
         resetForm();
     };

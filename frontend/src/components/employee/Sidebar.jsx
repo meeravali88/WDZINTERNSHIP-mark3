@@ -1,3 +1,4 @@
+// frontend/src/components/employee/Sidebar.jsx
 import React, { useState, useEffect, useRef } from "react";
 
 const NavItem = ({ icon, label, moduleName, activeModule, onNavigate }) => (

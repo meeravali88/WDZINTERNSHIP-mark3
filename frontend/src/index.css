@@ -1,29 +1,21 @@
-/* ---------- Global Reset ---------- */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
-
-/* ---------- Base Body Setup ---------- */
 body {
   background-color: #ffffff; /* Default white for dashboards */
   margin: 0;
   padding: 0;
   font-family: 'Poppins', sans-serif;
 }
-
-
-/* ---------- Gradient Background for Auth Pages ---------- */
 body.auth-page {
   background: linear-gradient(to right, #7ebcf7, #efa8f1);
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
-/* ---------- Login / Register Container ---------- */
 .login-container,
 .register-container {
   width: 350px;
@@ -40,8 +32,6 @@ body.auth-page {
   margin-bottom: 20px;
   color: #222;
 }
-
-/* ---------- Social Button ---------- */
 .social-button {
   display: flex;
   align-items: center;
@@ -65,8 +55,6 @@ body.auth-page {
   width: 25px;
   height: 25px;
 }
-
-/* ---------- Separator ---------- */
 .separator {
   text-align: center;
   margin: 15px 0;
@@ -81,8 +69,6 @@ body.auth-page {
   position: relative;
   z-index: 1;
 }
-
-/* ---------- Input Fields ---------- */
 .login-form,
 .register-form {
   margin-top: 10px;
@@ -114,8 +100,6 @@ body.auth-page {
   color: gray;
   font-size: 20px;
 }
-
-/* ---------- Forgot Password ---------- */
 .forgot-password-link {
   display: block;
   text-align: right;
@@ -128,8 +112,6 @@ body.auth-page {
 .forgot-password-link:hover {
   text-decoration: underline;
 }
-
-/* ---------- Submit Button ---------- */
 .submit-button {
   width: 100%;
   padding: 10px;
@@ -145,8 +127,6 @@ body.auth-page {
 .submit-button:hover {
   background: #0056d8;
 }
-
-/* ---------- Signup / Register Text ---------- */
 .signup-text {
   margin-top: 20px;
   font-size: 14px;

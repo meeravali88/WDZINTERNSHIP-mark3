@@ -16,10 +16,11 @@ const userRoute = require('./routes/userRoute');
 const materialRoutes = require('./routes/materialRoutes');
 const budgetRoutes = require('./routes/budgetRoutes');
 
-app.use('/api/user', userRoute);
-app.use('/api/material', materialRoutes);
-app.use('/api/budget', budgetRoutes);
+app.use('/api/auth', userRoute);
 
+app.get('/', (req, res) => {
+    res.send('API is running...');
+})
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

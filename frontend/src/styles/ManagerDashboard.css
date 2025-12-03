@@ -1089,3 +1089,7 @@ input:checked + .toggle-slider:before {
         align-items: flex-start;
     }
 }
+
+.employee-details p {
+    display: none !important;
+}

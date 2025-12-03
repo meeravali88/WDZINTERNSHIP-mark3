@@ -831,3 +831,318 @@ textarea.form-control {
         grid-template-columns: 1fr;
     }
 }
+
+/* ---------- Mark Attendance Button (Beautiful Style) ---------- */
+
+.mark-attendance-btn {
+  background: #007bff;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  margin-bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 3px 10px rgba(0, 123, 255, 0.25);
+}
+
+.mark-attendance-btn:hover {
+  background: #005ec7;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 123, 255, 0.35);
+}
+
+.mark-attendance-btn:active {
+  transform: scale(0.97);
+}
+
+/* Optional icon support */
+.mark-attendance-btn i {
+  font-size: 16px;
+}
+/* ===============================
+   MATERIALS MODULE LAYOUT
+   =============================== */
+
+.materials-module {
+  padding: 24px 28px;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Header */
+.materials-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.materials-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #20293a;
+}
+
+.materials-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Generic buttons used here */
+.materials-module .btn {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #fff;
+  transition: 0.2s;
+}
+
+.materials-module .btn.blue {
+  background: #007bff;
+}
+
+.materials-module .btn.orange {
+  background: #ff9f1c;
+}
+
+.materials-module .btn.green {
+  background: #28a745;
+}
+
+.materials-module .btn.red {
+  background: #e03131;
+}
+
+.materials-module .btn.small {
+  padding: 6px 10px;
+  font-size: 12px;
+}
+
+.materials-module .btn:hover {
+  filter: brightness(0.93);
+  transform: translateY(-1px);
+}
+
+/* ===============================
+   KPI CARDS ROW
+   =============================== */
+
+.materials-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 14px 18px;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+}
+
+.kpi-card h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.kpi-card p {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* ===============================
+   PENDING MATERIAL REQUESTS
+   =============================== */
+
+.pending-requests {
+  margin-bottom: 24px;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.pending-requests h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.pending-requests .muted {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.requests-list {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.request-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  padding: 10px 12px;
+  background: #f9fafb;
+}
+
+.request-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.req-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: #111827;
+}
+
+.req-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.request-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+/* status pill */
+.status-pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.status-pill.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-pill.approved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-pill.declined {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.request-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* ===============================
+   MATERIAL INVENTORY TABLE
+   =============================== */
+
+.material-inventory {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.material-inventory h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.material-inventory .table {
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.material-inventory .thead,
+.material-inventory .row {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1fr 1fr 1fr 1.2fr 0.8fr;
+  font-size: 13px;
+}
+
+.material-inventory .thead {
+  background: #f3f4f6;
+  font-weight: 600;
+  color: #374151;
+}
+
+.material-inventory .thead > div,
+.material-inventory .row > div {
+  padding: 8px 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.material-inventory .tbody .row:nth-child(odd) {
+  background: #fafafa;
+}
+
+.material-inventory .empty-row {
+  padding: 12px;
+  text-align: center;
+  color: #9ca3af;
+}
+
+/* ===============================
+   RESPONSIVE
+   =============================== */
+
+@media (max-width: 1024px) {
+  .materials-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .material-inventory .thead,
+  .material-inventory .row {
+    grid-template-columns: 1.6fr 1fr 0.8fr 0.8fr 0.8fr 1fr 0.8fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .materials-module {
+    padding: 16px;
+  }
+
+  .materials-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .request-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .request-right {
+    align-items: flex-start;
+  }
+
+  .materials-actions {
+    flex-direction: column;
+  }
+}

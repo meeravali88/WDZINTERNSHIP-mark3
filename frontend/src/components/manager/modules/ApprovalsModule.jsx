@@ -6,7 +6,7 @@ import EmptyState from '../EmptyState';
 const ApprovalsModule = ({ userProfile, onOpenModal, onLogout, onNavigate, kpiData, approvals, onApprovalAction }) => {
     return (
         <div className="module-container active" id="approvals-module">
-            <Header title="Approval Workflow" userProfile={userProfile} onOpenProfile={() => onOpenModal('profile')} onOpenSettings={() => onNavigate('settings')} onLogout={onLogout} />
+            {/* <Header title="Approval Workflow" userProfile={userProfile} onOpenProfile={() => onOpenModal('profile')} onOpenSettings={() => onNavigate('settings')} onLogout={onLogout} /> */}
             <div className="user-info" style={{ marginBottom: '20px', justifyContent: 'flex-end' }}>
                 <button className="btn btn-primary" onClick={() => onOpenModal('approval')}><i className="fas fa-plus"></i> New Request</button>
             </div>

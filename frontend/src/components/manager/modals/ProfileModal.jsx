@@ -1,5 +1,5 @@
 import React from 'react';
-import Modal from './Modal'; // A generic modal wrapper
+// A generic modal wrapper
 
 const ProfileModal = ({ isOpen, onClose, profile }) => {
     return (

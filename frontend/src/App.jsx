@@ -1,133 +1,125 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-
-// Pages
+import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ManagerDashboard from "./pages/ManagerDashboard";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import CustomerDashboard from "./pages/CustomerDashboard";
-
-// --- Protected Route ---
-function ProtectedRoute({ children, allowedRoles, currentUser, loading }) {
+import TicTacToe from "./pages/TicTacToe";
+function ProtectedRoute({ children, currentUser, loading }) {
   if (loading) return <div>Loading...</div>;
-
-  if (!currentUser) return <Navigate to="/" replace />;
-
-  if (allowedRoles && !allowedRoles.includes(currentUser.role)) {
-    switch (currentUser.role) {
-      case "manager":
-        return <Navigate to="/manager" replace />;
-      case "employee":
-        return <Navigate to="/employee" replace />;
-      case "customer":
-        return <Navigate to="/customer" replace />;
-      default:
-        return <Navigate to="/" replace />;
-    }
+  if (!currentUser) {
+    return <Navigate to="/login" replace />;
   }
-
   return children;
 }
+const loadAttendance = () => {
+  try {
+    const raw = localStorage.getItem("builderp_attendance");
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+};
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [attendance, setAttendance] = useState(() => loadAttendance());
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    if (storedUser) {
-      setCurrentUser(storedUser);
-      switch (storedUser.role) {
-        case "manager":
-          navigate("/manager", { replace: true });
-          break;
-        case "employee":
-          navigate("/employee", { replace: true });
-          break;
-        case "customer":
-          navigate("/customer", { replace: true });
-          break;
-        default:
-          navigate("/", { replace: true });
-      }
+    try {
+      const raw = localStorage.getItem("loggedInUser");
+      if (raw) setCurrentUser(JSON.parse(raw));
+    } catch (err) {
+      console.warn("Failed to read loggedInUser from localStorage:", err);
+      localStorage.removeItem("loggedInUser");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  }, [navigate]);
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("builderp_attendance", JSON.stringify(attendance));
+    } catch (err) {
+      console.warn("Failed to persist attendance:", err);
+    }
+  }, [attendance]);
+  const markAttendance = (partialRecord) => {
+    const now = new Date();
+    const record = {
+      id: "ATT-" + Date.now(),
+      name: partialRecord.name || partialRecord.employeeName || "Unknown",
+      employeeId: partialRecord.employeeId || partialRecord.email || null,
+      email: partialRecord.email || null,
+      date: now.toISOString().slice(0, 10),
+      timestamp: new Date().toLocaleTimeString([], { 
+        hour: "2-digit", 
+        minute: "2-digit" 
+      }),
+      status: partialRecord.status || "present",
+      meta: partialRecord.meta || {},
+    };
+    setAttendance((prev) => [record, ...prev]);
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("loggedInUser");
     setCurrentUser(null);
-    navigate("/", { replace: true });
   };
 
   return (
     <Routes>
+      <Route path="/play" element={<TicTacToe />} />
       <Route
         path="/"
         element={
-          currentUser ? (
-            <Navigate
-              to={
-                currentUser.role === "manager"
-                  ? "/manager"
-                  : currentUser.role === "employee"
-                  ? "/employee"
-                  : "/customer"
-              }
-              replace
-            />
+          loading ? (
+            <div>Loading...</div>
+          ) : currentUser ? (
+            <Navigate to={`/${currentUser.role}`} replace />
           ) : (
-            <LoginPage />
+            <Navigate to="/login" replace />
           )
         }
       />
 
-      <Route
-        path="/register"
-        element={currentUser ? <Navigate to="/" replace /> : <RegisterPage />}
+      <Route 
+        path="/login" 
+        element={<LoginPage setCurrentUser={setCurrentUser} />} 
       />
-
+      <Route path="/register" element={<RegisterPage />} />
       <Route
         path="/manager"
         element={
-          <ProtectedRoute
-            allowedRoles={["manager"]}
-            currentUser={currentUser}
-            loading={loading}
-          >
-            <ManagerDashboard user={currentUser} onLogout={handleLogout} />
+          <ProtectedRoute currentUser={currentUser} loading={loading}>
+            <ManagerDashboard 
+              onLogout={handleLogout} 
+              attendance={attendance}   // <-- Required for workflow
+            />
           </ProtectedRoute>
         }
       />
-
       <Route
         path="/employee"
         element={
-          <ProtectedRoute
-            allowedRoles={["employee"]}
-            currentUser={currentUser}
-            loading={loading}
-          >
-            <EmployeeDashboard user={currentUser} onLogout={handleLogout} />
+          <ProtectedRoute currentUser={currentUser} loading={loading}>
+            <EmployeeDashboard 
+              onLogout={handleLogout} 
+              onMarkAttendance={markAttendance}  // <-- Required for workflow
+            />
           </ProtectedRoute>
         }
       />
-
       <Route
         path="/customer"
         element={
-          <ProtectedRoute
-            allowedRoles={["customer"]}
-            currentUser={currentUser}
-            loading={loading}
-          >
+          <ProtectedRoute currentUser={currentUser} loading={loading}>
             <CustomerDashboard user={currentUser} onLogout={handleLogout} />
           </ProtectedRoute>
         }
       />
-
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

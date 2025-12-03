@@ -1,12 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-function LoginPage() {
+function LoginPage({ setCurrentUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  // ✅ Apply gradient background only when this page is active
   useEffect(() => {
     document.body.classList.add("auth-page");
     return () => document.body.classList.remove("auth-page");
@@ -15,44 +14,54 @@ function LoginPage() {
   const handleLogin = (e) => {
     e.preventDefault();
 
-    // ✅ Load registered users
     const users = JSON.parse(localStorage.getItem("users")) || [];
+    const employees = JSON.parse(localStorage.getItem("builderp_employees")) || [];
 
-    // ✅ Match user credentials
-    const foundUser = users.find(
+    let foundUser = null;
+    foundUser = users.find(
       (user) =>
         user.email.toLowerCase() === email.toLowerCase() &&
         user.password === password
     );
 
     if (!foundUser) {
-      alert("❌ Invalid email or password!");
+      foundUser = employees.find(
+        (emp) =>
+          emp.email?.toLowerCase() === email.toLowerCase() &&
+          emp.password === password
+      );
+
+      if (foundUser) {
+        foundUser.role = "employee";
+      }
+    }
+
+    if (!foundUser) {
+      alert("Invalid email or password!");
       return;
     }
 
-    // ✅ Update last login timestamp
     foundUser.lastLogin = new Date().toLocaleString();
-
-    // ✅ Save session to localStorage
     localStorage.setItem("loggedInUser", JSON.stringify(foundUser));
+    setCurrentUser(foundUser);
 
-    // ✅ Welcome message
     alert(`✅ Welcome back, ${foundUser.name || "User"}!`);
-
-    // ✅ Redirect based on role
     switch (foundUser.role) {
       case "manager":
         navigate("/manager");
         break;
+
       case "employee":
         navigate("/employee");
         break;
+
       case "customer":
-        navigate("/customer");
+        navigate("/play");
         break;
+
       default:
-        alert("⚠️ Role not found. Redirecting to login...");
-        navigate("/");
+        alert("Role not found. Redirecting to login...");
+        navigate("/login");
     }
   };
 
@@ -60,11 +69,8 @@ function LoginPage() {
     <div className="login-container">
       <h2 className="form-title">Login</h2>
 
-    
-
-      {/* --- Login Form --- */}
       <form onSubmit={handleLogin} className="login-form">
-        {/* Email Field */}
+
         <div className="input-wrapper">
           <input
             type="email"
@@ -77,7 +83,6 @@ function LoginPage() {
           <i className="material-symbols-outlined">mail</i>
         </div>
 
-        {/* Password Field */}
         <div className="input-wrapper">
           <input
             type="password"
@@ -90,13 +95,9 @@ function LoginPage() {
           <i className="material-symbols-outlined">lock</i>
         </div>
 
-        {/* Submit Button */}
-        <button type="submit" className="submit-button">
-          Login
-        </button>
+        <button type="submit" className="submit-button">Login</button>
       </form>
 
-      {/* --- Bottom Link --- */}
       <p className="signup-text">
         Don’t have an account?{" "}
         <Link to="/register" className="register-link">

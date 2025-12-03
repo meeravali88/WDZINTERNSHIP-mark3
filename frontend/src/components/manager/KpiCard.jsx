@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 const KpiCard = ({ title, value, trend, trendDirection, cardType }) => {
     
     const getTrend = () => {

@@ -32,7 +32,7 @@ const BudgetRow = ({ budget }) => {
 const BudgetModule = ({ userProfile, onOpenModal, onLogout, onNavigate, kpiData, budgets }) => {
     return (
         <div className="module-container active" id="budget-module">
-            <Header title="Budget Management" userProfile={userProfile} onOpenProfile={() => onOpenModal('profile')} onOpenSettings={() => onNavigate('settings')} onLogout={onLogout} />
+            {/* <Header title="Budget Management" userProfile={userProfile} onOpenProfile={() => onOpenModal('profile')} onOpenSettings={() => onNavigate('settings')} onLogout={onLogout} /> */}
             <div className="user-info" style={{ marginBottom: '20px', justifyContent: 'flex-end' }}>
                 <button className="btn btn-primary" onClick={() => onOpenModal('budget')}><i className="fas fa-plus"></i> New Budget</button>
             </div>

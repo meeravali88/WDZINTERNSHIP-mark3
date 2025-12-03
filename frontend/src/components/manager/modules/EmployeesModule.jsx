@@ -1,4 +1,3 @@
-import React from 'react';
 import Header from '../Header';
 import KpiCard from '../KpiCard';
 import EmptyState from '../EmptyState';
@@ -6,11 +5,6 @@ import EmptyState from '../EmptyState';
 const EmployeesModule = ({ userProfile, onOpenModal, onLogout, onNavigate, kpiData, employees, onDeleteEmployee }) => {
     return (
         <div className="module-container active" id="employees-module">
-            <Header title="Employee Management" userProfile={userProfile} onOpenProfile={() => onOpenModal('profile')} onOpenSettings={() => onNavigate('settings')} onLogout={onLogout} />
-            <div className="user-info" style={{ marginBottom: '20px', justifyContent: 'flex-end' }}>
-                <button className="btn btn-primary" onClick={() => onOpenModal('employee')}><i className="fas fa-plus"></i> New Employee</button>
-            </div>
-
             <div className="kpi-cards">
                 <KpiCard title="Total Employees" value={kpiData.totalEmployees} />
                 <KpiCard title="Present Today" value={kpiData.totalEmployees} />
